@@ -1,0 +1,11 @@
+# Ignore SwiftPM build files
+.build/
+
+# Ignore database files
+.build/**/data.mdb
+
+# Ignore SwiftLint binary
+.build/artifacts/messagekit/LintBinary/
+
+# Ignore MessageKit dependency
+.build/repositories/MessageKit-*/ 
