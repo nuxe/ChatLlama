@@ -1,4 +1,0 @@
-module MessageKit {
-    header "/Users/kush/ios/ChatLlama/.build/arm64-apple-macosx/debug/MessageKit.build/MessageKit-Swift.h"
-    requires objc
-}

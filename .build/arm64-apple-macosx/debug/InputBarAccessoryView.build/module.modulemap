@@ -1,4 +1,0 @@
-module InputBarAccessoryView {
-    header "/Users/kush/ios/ChatLlama/.build/arm64-apple-macosx/debug/InputBarAccessoryView.build/InputBarAccessoryView-Swift.h"
-    requires objc
-}

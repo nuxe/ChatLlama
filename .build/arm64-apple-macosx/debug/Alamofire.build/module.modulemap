@@ -1,4 +1,0 @@
-module Alamofire {
-    header "/Users/kush/ios/ChatLlama/.build/arm64-apple-macosx/debug/Alamofire.build/Alamofire-Swift.h"
-    requires objc
-}
