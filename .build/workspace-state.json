@@ -1,0 +1,92 @@
+{
+  "object" : {
+    "artifacts" : [
+      {
+        "kind" : "artifactsArchive",
+        "packageRef" : {
+          "identity" : "messagekit",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/MessageKit/MessageKit.git",
+          "name" : "MessageKit"
+        },
+        "path" : "/Users/kush/ios/ChatLlama/.build/artifacts/messagekit/LintBinary/SwiftLintBinary.artifactbundle",
+        "source" : {
+          "checksum" : "82ef90b7d76b02e41edd73423687d9cedf0bb9849dcbedad8df3a461e5a7b555",
+          "type" : "remote",
+          "url" : "https://github.com/realm/SwiftLint/releases/download/0.47.1/SwiftLintBinary-macos.artifactbundle.zip"
+        },
+        "targetName" : "LintBinary"
+      },
+      {
+        "kind" : "artifactsArchive",
+        "packageRef" : {
+          "identity" : "messagekit",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/MessageKit/MessageKit.git",
+          "name" : "MessageKit"
+        },
+        "path" : "/Users/kush/ios/ChatLlama/.build/artifacts/messagekit/swiftformat/swiftformat.artifactbundle",
+        "source" : {
+          "checksum" : "5ce27780dceee8714b15d53141e6dce1a8d626e970eade3c511c9ef1a0c06f40",
+          "type" : "remote",
+          "url" : "https://github.com/nicklockwood/SwiftFormat/releases/download/0.49.13/swiftformat.artifactbundle.zip"
+        },
+        "targetName" : "swiftformat"
+      }
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "alamofire",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/Alamofire/Alamofire.git",
+          "name" : "Alamofire"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+            "version" : "5.10.2"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "Alamofire"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "inputbaraccessoryview",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/nathantannar4/InputBarAccessoryView",
+          "name" : "InputBarAccessoryView"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "c7acd5fa32e54cd7a44ad7eb9a7730da35b54c95",
+            "version" : "6.5.1"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "InputBarAccessoryView"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "messagekit",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/MessageKit/MessageKit.git",
+          "name" : "MessageKit"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "b024c1287ac30fb6ea2ee07169e6193efc11d972",
+            "version" : "4.3.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "MessageKit"
+      }
+    ]
+  },
+  "version" : 6
+}

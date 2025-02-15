@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		43CF0D802D614FBC0002623B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 43CF0D7F2D614FBC0002623B /* Alamofire */; };
+		43CF0D822D614FC90002623B /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 43CF0D812D614FC90002623B /* MessageKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		431425492D60371C005D612A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43CF0D802D614FBC0002623B /* Alamofire in Frameworks */,
+				43CF0D822D614FC90002623B /* MessageKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +132,8 @@
 			);
 			name = ChatLlama;
 			packageProductDependencies = (
+				43CF0D7F2D614FBC0002623B /* Alamofire */,
+				43CF0D812D614FC90002623B /* MessageKit */,
 			);
 			productName = ChatLlama;
 			productReference = 4314252F2D60371C005D612A /* ChatLlama.app */;
@@ -208,6 +217,10 @@
 			);
 			mainGroup = 431425262D60371C005D612A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4356ADD42D614F7700347189 /* XCRemoteSwiftPackageReference "MessageKit" */,
+				43CF0D7E2D614FBC0002623B /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 431425302D60371C005D612A /* Products */;
 			projectDirPath = "";
@@ -569,6 +582,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4356ADD42D614F7700347189 /* XCRemoteSwiftPackageReference "MessageKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MessageKit/MessageKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		43CF0D7E2D614FBC0002623B /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		43CF0D7F2D614FBC0002623B /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43CF0D7E2D614FBC0002623B /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		43CF0D812D614FC90002623B /* MessageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4356ADD42D614F7700347189 /* XCRemoteSwiftPackageReference "MessageKit" */;
+			productName = MessageKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 431425272D60371C005D612A /* Project object */;
 }
