@@ -3,4 +3,52 @@
    uuid = "0A9C630E-231D-4E64-AADA-637752D9BEA2"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "917D8478-C33B-4FC9-9011-80B79A63605E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../Library/Developer/Xcode/DerivedData/ChatLlama-efwdwtbogbcmyaaszagrnzlaacbg/SourcePackages/checkouts/OpenAI/Sources/OpenAI/OpenAI+OpenAIAsync.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "chatsStream(query:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "917D8478-C33B-4FC9-9011-80B79A63605E - feab819481673877"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.AsyncThrowingStream&lt;OpenAI.ChatStreamResult, Swift.Error&gt;.Continuation) -&gt; () in OpenAI.OpenAI.chatsStream(query: OpenAI.ChatQuery) -&gt; Swift.AsyncThrowingStream&lt;OpenAI.ChatStreamResult, Swift.Error&gt;"
+                  moduleName = "ChatLlama.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kush/Library/Developer/Xcode/DerivedData/ChatLlama-efwdwtbogbcmyaaszagrnzlaacbg/SourcePackages/checkouts/OpenAI/Sources/OpenAI/OpenAI+OpenAIAsync.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44">
+               </Location>
+               <Location
+                  uuid = "917D8478-C33B-4FC9-9011-80B79A63605E - 6c00b62f8222a8b0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;OpenAI.ChatStreamResult, Swift.Error&gt;) -&gt; () in closure #1 (Swift.AsyncThrowingStream&lt;OpenAI.ChatStreamResult, Swift.Error&gt;.Continuation) -&gt; () in OpenAI.OpenAI.chatsStream(query: OpenAI.ChatQuery) -&gt; Swift.AsyncThrowingStream&lt;OpenAI.ChatStreamResult, Swift.Error&gt;"
+                  moduleName = "ChatLlama.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kush/Library/Developer/Xcode/DerivedData/ChatLlama-efwdwtbogbcmyaaszagrnzlaacbg/SourcePackages/checkouts/OpenAI/Sources/OpenAI/OpenAI+OpenAIAsync.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

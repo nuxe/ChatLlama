@@ -1,18 +1,45 @@
 import UIKit
 import MessageKit
 import InputBarAccessoryView
+import Combine
 
 class ChatViewController: MessagesViewController {
-    private var messages: [Message] = []
-    private let ollamaService = OllamaAPIService.shared
+    private let viewModel: ChatViewModel
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(viewModel: ChatViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.viewModel = ChatViewModel() // Uses shared AppConfig by default
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupMessageInputBar()
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        viewModel.$messages
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.messagesCollectionView.reloadData()
+                self?.messagesCollectionView.scrollToLastItem(animated: true)
+            }
+            .store(in: &cancellables)
         
-        // Add a welcome message
-        addMessage(content: "Hello! I'm ChatLlama. How can I help you today?", sender: .bot)
+        viewModel.$isLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                self?.messageInputBar.inputTextView.placeholder = isLoading ? "ChatLlama is thinking..." : "Type a message"
+                self?.messageInputBar.sendButton.isEnabled = !isLoading
+            }
+            .store(in: &cancellables)
     }
     
     private func setupUI() {
@@ -36,48 +63,6 @@ class ChatViewController: MessagesViewController {
         messageInputBar.sendButton.setTitle("", for: .normal)
         messageInputBar.sendButton.setImage(UIImage(systemName: "arrow.up.circle.fill"), for: .normal)
     }
-    
-    private func addMessage(content: String, sender: Sender) {
-        let message = Message(content: content, sender: sender)
-        messages.append(message)
-        
-        // Reload the collection view
-        messagesCollectionView.reloadData()
-        messagesCollectionView.scrollToLastItem(animated: true)
-    }
-    
-    private func sendMessageToOllama(_ text: String) {
-        // Show loading indicator
-        messageInputBar.inputTextView.placeholder = "ChatLlama is thinking..."
-//        messageInputBar.isEnabled = false
-        
-        Task {
-            do {
-                let response = try await ollamaService.sendMessage(prompt: text)
-                
-                // Update UI on main thread
-                await MainActor.run {
-                    addMessage(content: response, sender: .bot)
-                    messageInputBar.inputTextView.placeholder = "Type a message"
-//                    messageInputBar.isEnabled = true
-                }
-            } catch {
-                await MainActor.run {
-                    // Show error alert
-                    let alert = UIAlertController(
-                        title: "Error",
-                        message: "Failed to get response: \(error.localizedDescription)",
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    present(alert, animated: true)
-                    
-                    messageInputBar.inputTextView.placeholder = "Type a message"
-//                    messageInputBar.isEnabled = true
-                }
-            }
-        }
-    }
 }
 
 // MARK: - MessagesDataSource
@@ -87,11 +72,11 @@ extension ChatViewController: MessagesDataSource {
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        return messages[indexPath.section]
+        return viewModel.getMessage(at: indexPath.section)
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-        return messages.count
+        return viewModel.messageCount
     }
 }
 
@@ -120,10 +105,19 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         // Clear input bar
         inputBar.inputTextView.text = ""
         
-        // Add user message
-        addMessage(content: text, sender: .user)
-        
-        // Send to Ollama
-        sendMessageToOllama(text)
+        Task {
+            do {
+                try await viewModel.sendMessage(text)
+            } catch {
+                // Show error alert
+                let alert = UIAlertController(
+                    title: "Error",
+                    message: "Failed to get response: \(error.localizedDescription)",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                present(alert, animated: true)
+            }
+        }
     }
 } 
