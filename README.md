@@ -1,22 +1,13 @@
 # ChatLlama
 
-ChatLlama is a native iOS application that provides a ChatGPT-style interface for interacting with locally hosted Ollama models. The app features a modern, responsive chat interface built with UIKit and MessageKit.
-
-## Features
-
-- 🎯 Clean, intuitive chat interface
-- 💬 Real-time streaming responses from Ollama
-- 🎨 Beautiful message bubbles with user/bot differentiation
-- 🔄 Asynchronous message handling
-- 🌐 Local network communication with Ollama
-- ⚡️ Fast and responsive UI
+ChatLlama is a native iOS & Mac app that provides a modern chat interface for interacting with the Ollama and OpenAI models. The app supports both OpenAI's models and locally hosted Ollama models, featuring a clean and responsive chat interface built on top of MessageKit.
 
 ## Requirements
 
-- iOS 14.0+
-- Xcode 14.0+
-- Mac running Ollama (for the language model backend)
-- Local network access between iOS device and Mac
+- iOS 18.2+
+- Xcode 16.0+
+- For Ollama: Mac running Ollama 
+- For OpenAI: Valid API key
 
 ## Installation
 
@@ -33,56 +24,66 @@ open ChatLlama.xcodeproj
 
 3. Install dependencies using Swift Package Manager:
    - MessageKit (4.0.0+)
-   - Alamofire (5.0.0+)
+   - MacPaw/OpenAI 
 
-   The dependencies should be automatically resolved when you open the project in Xcode.
+4. Configure your LLM provider:
+   - For OpenAI: Add your API key to Secrets.xcconfig
+   - For Ollama: Follow the Ollama setup instructions below
 
-4. Build and run the project (⌘+R)
+5. Build and run the project (⌘+R)
 
-## Setup Ollama
+## LLM Provider Setup
+
+### OpenAI Setup
+
+1. Create a Secrets.xcconfig file if it doesn't exist
+2. Add your OpenAI API key:
+```
+OPENAI_API_KEY = your_api_key_here
+```
+
+### Ollama Setup
 
 1. Install Ollama on your Mac by following the instructions at [Ollama's website](https://ollama.ai)
 
-2. Pull the Llama model:
+2. Run your desired model locally:
 ```bash
-ollama pull llama2
-```
-
-3. Start the Ollama server:
-```bash
-ollama serve
+ollama run llama3.2:latest
 ```
 
 ## Configuration
 
-By default, ChatLlama attempts to connect to Ollama at `http://localhost:11434`. If you need to use a different host or port:
+The app uses a flexible configuration system through `AppConfig.swift`:
 
-1. Open `OllamaAPIService.swift`
-2. Modify the `baseURL` or use the `configure(host:port:)` method to set your custom endpoint
+- Choose between OpenAI and Ollama providers
+- Configure model settings
+- Set custom endpoints and API parameters
+
+Default configurations:
+- OpenAI: Uses GPT-4o Mini model
+- Ollama: Connects to `http://localhost:11434` with Llama 3.2
 
 ## Network Permissions
 
-The app requires local network access to communicate with Ollama. These permissions are already configured in the Info.plist file:
+The app requires appropriate network access:
 
+- Local network access for Ollama communication
+- Internet access for OpenAI API calls
+
+These permissions are configured in the Info.plist file:
 - `NSLocalNetworkUsageDescription`: For local network access
 - `NSAppTransportSecurity`: Allows local networking
 
 ## Architecture
 
-ChatLlama follows a clean architecture pattern:
+ChatLlama follows an MVVM (Model-View-ViewModel) architectural pattern with clean separation of concerns:
 
 - **Models**: Message and Sender types for chat data
-- **Networking**: OllamaAPIService for API communication
-- **ViewControllers**: ChatViewController for UI and user interaction
+- **Views**: UI components and ChatViewController for user interaction
+- **ViewModels**: ChatViewModel containing business logic and state management
+- **Configuration**: AppConfig for LLM provider settings
+- **Networking**: API services for provider communication
 - **Delegates**: App and Scene delegates for lifecycle management
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
@@ -91,5 +92,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - [MessageKit](https://github.com/MessageKit/MessageKit) for the chat UI components
-- [Alamofire](https://github.com/Alamofire/Alamofire) for networking
 - [Ollama](https://ollama.ai) for the local LLM infrastructure 
+- [MacPaw/OpenAI](https://github.com/MacPaw/OpenAI) for the OpenAI API client
