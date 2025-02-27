@@ -1,3 +1,10 @@
+//
+//  LLMConfig.swift
+//  ChatLlama
+//
+//  Created by Kush Agrawal on 2/24/25.
+//
+
 import Foundation
 import OpenAI
 
@@ -6,8 +13,8 @@ enum LLMProvider {
     case ollama
 }
 
-class AppConfig {
-    static let shared = AppConfig(.openAI)
+class LLMConfig {
+    static let shared = LLMConfig(.ollama)
         
     private let provider: LLMProvider
     private init(_ provider: LLMProvider) {

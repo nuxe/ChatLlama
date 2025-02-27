@@ -10,6 +10,7 @@
 		43CF0D802D614FBC0002623B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 43CF0D7F2D614FBC0002623B /* Alamofire */; };
 		43CF0D822D614FC90002623B /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 43CF0D812D614FC90002623B /* MessageKit */; };
 		43CF0D852D615D610002623B /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 43CF0D842D615D610002623B /* OpenAI */; };
+		43F3AB8B2D701D9700C97978 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 43F3AB8A2D701D9700C97978 /* SDWebImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 			files = (
 				43CF0D802D614FBC0002623B /* Alamofire in Frameworks */,
 				43CF0D852D615D610002623B /* OpenAI in Frameworks */,
+				43F3AB8B2D701D9700C97978 /* SDWebImage in Frameworks */,
 				43CF0D822D614FC90002623B /* MessageKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,6 +139,7 @@
 				43CF0D7F2D614FBC0002623B /* Alamofire */,
 				43CF0D812D614FC90002623B /* MessageKit */,
 				43CF0D842D615D610002623B /* OpenAI */,
+				43F3AB8A2D701D9700C97978 /* SDWebImage */,
 			);
 			productName = ChatLlama;
 			productReference = 4314252F2D60371C005D612A /* ChatLlama.app */;
@@ -224,6 +227,7 @@
 				4356ADD42D614F7700347189 /* XCRemoteSwiftPackageReference "MessageKit" */,
 				43CF0D7E2D614FBC0002623B /* XCRemoteSwiftPackageReference "Alamofire" */,
 				43CF0D832D615D610002623B /* XCRemoteSwiftPackageReference "OpenAI" */,
+				43F3AB892D701D9700C97978 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 431425302D60371C005D612A /* Products */;
@@ -302,7 +306,7 @@
 		4314255C2D60371C005D612A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 431425312D60371C005D612A /* ChatLlama */;
-			baseConfigurationReferenceRelativePath = Configuration/Secrets.xcconfig;
+			baseConfigurationReferenceRelativePath = Modules/Root/Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -614,6 +618,14 @@
 				kind = branch;
 			};
 		};
+		43F3AB892D701D9700C97978 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.21.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -631,6 +643,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 43CF0D832D615D610002623B /* XCRemoteSwiftPackageReference "OpenAI" */;
 			productName = OpenAI;
+		};
+		43F3AB8A2D701D9700C97978 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43F3AB892D701D9700C97978 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -31,13 +31,13 @@ struct Message: MessageType {
     var sender: SenderType
     
     init(id: String = UUID().uuidString,
-         content: String,
+         kind: MessageKind,
          sender: Sender,
          sentDate: Date = Date()) {
         self.messageId = id
         self.sentDate = sentDate
         self.sender = sender
-        self.kind = .text(content)
+        self.kind = kind
     }
     
     // Helper to get text content
