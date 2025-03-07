@@ -1,5 +1,5 @@
 //
-//  ContainerViewController.swift
+//  ChatMenuViewController.swift
 //  ChatLlama
 //
 //  Created by Kush Agrawal on 2/27/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ContainerViewController: UIViewController {
+class ChatMenuViewController: UIViewController {
     
     // MARK: - Properties
     
@@ -15,13 +15,12 @@ class ContainerViewController: UIViewController {
     private var isChatListVisible = false
     
     private lazy var chatListViewController: ChatListViewController = {
-        let controller = ChatListViewController()
+        let controller = ChatListViewController(chatListViewModel: chatListViewModel, chatViewModel: chatViewModel)
         return controller
     }()
     
     private lazy var chatViewController: ChatViewController = {
-        let viewModel = ChatViewModel(llmConfig: .shared)
-        let controller = ChatViewController(viewModel: viewModel)
+        let controller = ChatViewController(viewModel: chatViewModel)
         return controller
     }()
     
@@ -41,12 +40,28 @@ class ContainerViewController: UIViewController {
         return view
     }()
     
+    private let chatViewModel: ChatViewModel
+    private let chatListViewModel: ChatListViewModel
+
+    // MARK: - Init
+
+    init(chatViewModel: ChatViewModel,
+         chatListViewModel: ChatListViewModel) {
+        self.chatViewModel = chatViewModel
+        self.chatListViewModel = chatListViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupChildViewControllers()
-        setupMenuButton()
+        setupNavigationButtons()
         
         // Add edge swipe gesture to show menu
         let edgeSwipe = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgeSwipe(_:)))
@@ -54,7 +69,25 @@ class ContainerViewController: UIViewController {
         view.addGestureRecognizer(edgeSwipe)
     }
     
-    // MARK: - Setup
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { _ in
+            // Update frames for rotation
+            self.chatNavigationController.view.frame = CGRect(origin: .zero, size: size)
+            self.dimView.frame = CGRect(origin: .zero, size: size)
+            
+            let chatListFrame = CGRect(
+                x: self.isChatListVisible ? 0 : -self.chatListWidth,
+                y: 0,
+                width: self.chatListWidth,
+                height: size.height
+            )
+            self.chatListViewController.view.frame = chatListFrame
+        })
+    }
+    
+    // MARK: - Private
     
     private func setupChildViewControllers() {
         // Add the chat view controller (main content)
@@ -77,7 +110,11 @@ class ContainerViewController: UIViewController {
         chatListViewController.delegate = self
     }
     
-    private func setupMenuButton() {
+    @objc private func createNewChat() {
+        chatListViewModel.createNewChat()
+    }
+    
+    private func setupNavigationButtons() {
         let menuButton = UIBarButtonItem(
             image: UIImage(systemName: "line.horizontal.3"),
             style: .plain,
@@ -85,11 +122,18 @@ class ContainerViewController: UIViewController {
             action: #selector(toggleChatList)
         )
         chatViewController.navigationItem.leftBarButtonItem = menuButton
+        
+        let newChatButton = UIBarButtonItem(
+            image: UIImage(systemName: "square.and.pencil"),
+            style: .plain,
+            target: self,
+            action: #selector(createNewChat)
+        )
+        chatViewController.navigationItem.rightBarButtonItem = newChatButton
     }
     
-    // MARK: - Actions
-    
-    @objc private func toggleChatList() {
+    @objc
+    private func toggleChatList() {
         if isChatListVisible {
             hideChatList()
         } else {
@@ -97,17 +141,17 @@ class ContainerViewController: UIViewController {
         }
     }
     
-    @objc private func handleDimViewTap() {
+    @objc
+    private func handleDimViewTap() {
         hideChatList()
     }
     
-    @objc private func handleEdgeSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
+    @objc
+    private func handleEdgeSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
         if gesture.state == .began {
             showChatList()
         }
     }
-    
-    // MARK: - Helper Methods
     
     private func showChatList() {
         // Animate chat list in
@@ -126,28 +170,10 @@ class ContainerViewController: UIViewController {
         }
         isChatListVisible = false
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        coordinator.animate(alongsideTransition: { _ in
-            // Update frames for rotation
-            self.chatNavigationController.view.frame = CGRect(origin: .zero, size: size)
-            self.dimView.frame = CGRect(origin: .zero, size: size)
-            
-            let chatListFrame = CGRect(
-                x: self.isChatListVisible ? 0 : -self.chatListWidth,
-                y: 0,
-                width: self.chatListWidth,
-                height: size.height
-            )
-            self.chatListViewController.view.frame = chatListFrame
-        })
-    }
 }
 
 // MARK: - ChatListViewControllerDelegate
-extension ContainerViewController: ChatListViewControllerDelegate {
+extension ChatMenuViewController: ChatListViewControllerDelegate {
     func chatListViewController(_ controller: ChatListViewController, didSelectChat chatTitle: String) {
         // Update the chat view with the selected chat
         chatViewController.title = chatTitle

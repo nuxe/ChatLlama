@@ -19,15 +19,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let viewModel = ChatViewModel(llmConfig: .shared)
-        
+        let chatManager = ChatManager()
+        let chatViewModel = ChatViewModel(llmConfig: .shared, chatManager: chatManager)
+        let chatListViewModel = ChatListViewModel()
+
         if UIDevice.current.userInterfaceIdiom == .pad {
             // Use Split View for iPad & macOS
-            window.rootViewController = ChatSplitViewController()
+            window.rootViewController = ChatSplitViewController(chatViewModel: chatViewModel, chatListViewModel: chatListViewModel)
         } else {
-            // Use Container with slide menu for iPhone
-            let containerViewController = ContainerViewController()
-            window.rootViewController = containerViewController
+            window.rootViewController = ChatMenuViewController(chatViewModel: chatViewModel, chatListViewModel: chatListViewModel)
         }
         
         window.makeKeyAndVisible()

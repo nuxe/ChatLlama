@@ -9,12 +9,29 @@ import UIKit
 
 class ChatSplitViewController: UISplitViewController, UISplitViewControllerDelegate {
     
+    let chatViewModel: ChatViewModel
+    let chatListViewModel: ChatListViewModel
+
+    // MARK: - Init
+
+    init(chatViewModel: ChatViewModel, chatListViewModel: ChatListViewModel) {
+        self.chatViewModel = chatViewModel
+        self.chatListViewModel = chatListViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Overrides
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Create controllers
-        let chatListVC = ChatListViewController()
-        let chatVC = ChatViewController(viewModel: .init(llmConfig: .shared))
+        let chatListVC = ChatListViewController(chatListViewModel: chatListViewModel, chatViewModel: chatViewModel)
+        let chatVC = ChatViewController(viewModel: chatViewModel)
         chatVC.title = "Select a Chat"
         
         // Create navigation controllers
