@@ -18,11 +18,11 @@ extension ChatViewController: MessagesDataSource {
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        return viewModel.messages[indexPath.section]
+        return chat.messages[indexPath.section]
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-        return viewModel.messages.count
+        return chat.messages.count
     }
 }
 
@@ -66,8 +66,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         
         Task {
             do {
-//                try await viewModel.sendUserMessage(text)
-                try await viewModel.sendImageMessage()
+                try await viewModel.sendUserMessage(text)
             } catch {
                 // Show error alert
                 let alert = UIAlertController(

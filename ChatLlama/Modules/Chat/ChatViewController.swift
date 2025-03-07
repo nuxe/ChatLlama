@@ -17,6 +17,10 @@ class ChatViewController: MessagesViewController {
     
     let viewModel: ChatViewModel
     private var cancellables = Set<AnyCancellable>()
+    
+    var chat: Chat {
+        viewModel.chat
+    }
 
     // MARK: - Init
 
@@ -64,7 +68,7 @@ class ChatViewController: MessagesViewController {
     }
     
     private func setupBindings() {
-        viewModel.$messages
+        viewModel.$chat
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.messagesCollectionView.reloadData()

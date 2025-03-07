@@ -12,41 +12,59 @@ import MessageKit
 
 @MainActor
 class ChatViewModel: ObservableObject {
-    @Published private(set) var messages: [Message] = []
+    
+    enum ChatType {
+        case image
+        case text
+    }
+    
+    // MARK: - Properties
+
+    @Published var chat: Chat
     @Published var isLoading: Bool = false
+    var chatType: ChatType = .text
     
     private let openAI: OpenAI
     private var cancellables = Set<AnyCancellable>()
     private let llmConfig: LLMConfig
+    private let chatManager: ChatManager
     
-    init(llmConfig: LLMConfig = .shared) {
+    // MARK: - Init
+    
+    init(llmConfig: LLMConfig = .shared, chatManager: ChatManager) {
         self.llmConfig = llmConfig
-        
+        self.chatManager = chatManager
+        self.chat = chatManager.currentChat
         let configuration = llmConfig.providerConfig
+
         self.openAI = OpenAI(configuration: configuration)
-
-        // Add initial welcome message
-        let welcomeMessage = "Hello! I'm ChatLlama. How can I help you today?"
-        addMessage(kind: .text(welcomeMessage), sender: .bot)
     }
 
-    // Generic
-    
-    func addMessage(kind: MessageKind, sender: Sender) {
-        let message = Message.init(kind: kind, sender: sender)
-        messages.append(message)
-    }
-    
-    // Text messages
+    // MARK: - Public
 
     func sendUserMessage(_ text: String) async throws {
         // Add user message
-        addMessage(kind: .text(text), sender: .user)
+        chatManager.addMessage(kind: .text(text), sender: .user)
         isLoading = true
         
         defer { isLoading = false }
         
-        let messageParams: [ChatQuery.ChatCompletionMessageParam] = messages.compactMap { message in
+        do {
+            switch chatType {
+            case .image:
+                try await sendImageMessage(text)
+            case .text:
+                try await sendTextMessage(text)
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: - Private
+
+    private func sendTextMessage(_ text: String) async throws {
+        let messageParams: [ChatQuery.ChatCompletionMessageParam] = chat.messages.compactMap { message in
             guard let messageSenderType = message.sender as? Sender else {
                 return nil
             }
@@ -61,55 +79,32 @@ class ChatViewModel: ObservableObject {
                     content: message.content)
             }
         }
-        
-        // Create chat query
+
         let query = ChatQuery(messages: messageParams, model: llmConfig.model)
-        
+
         do {
             let result = try await openAI.chats(query: query)
             
             if let responseContent = result.choices.first?.message.content?.string {
-                addMessage(kind: .text(responseContent), sender: .bot)
+                chatManager.addMessage(kind: .text(responseContent), sender: .bot)
             }
         } catch {
             throw error
         }
     }
     
-    // Images
-    
-    func sendImageMessage() async throws {
-        let query = ImagesQuery(prompt: "Generate an image of a cat on the moon", n: 1, size: ._256)
+    private func sendImageMessage(_ text: String) async throws {
+        let query = ImagesQuery(prompt: text, n: 1, size: ._256)
+
         do {
             let imageResult = try await openAI.images(query: query)
             guard let imageURL = URL(string: imageResult.data[0].url ?? "") else { return }
             
             let item = ImageMediaItem.init(url: imageURL, placeholderImage: .init(), size: .init(width: 256, height: 256))
-            addMessage(kind: .photo(item), sender: .bot)
-
-            // Add revised prompt here
+            
+            chatManager.addMessage(kind: .photo(item), sender: .bot)
         } catch {
             throw error
         }
     }
-    
-    var messageCount: Int {
-        messages.count
-    }
-    
-    func getMessage(at index: Int) -> Message {
-        messages[index]
-    }
 } 
-
-import UIKit
-
-struct ImageMediaItem: MediaItem {
-    var url: URL?
-    
-    var image: UIImage?
-    
-    var placeholderImage: UIImage
-    
-    var size: CGSize
-}

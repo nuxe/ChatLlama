@@ -50,3 +50,18 @@ struct Message: MessageType {
         }
     }
 } 
+
+struct Chat: Identifiable {
+    var id: UUID = UUID()
+    var messages: [Message]
+    var created: Date
+    
+    var title: String {
+        messages.first?.content ?? "New Chat"
+    }
+    
+    mutating func addMessage(kind: MessageKind, sender: Sender) {
+        let message = Message.init(kind: kind, sender: sender)
+        messages.append(message)
+    }
+}
