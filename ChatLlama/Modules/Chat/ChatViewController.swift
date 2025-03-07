@@ -44,29 +44,23 @@ class ChatViewController: MessagesViewController {
         title = "Chat Llama 🦙"
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            let menuButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3"),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(openMenu))
-            navigationItem.leftBarButtonItem = menuButton
-        }
-
         // Configure the messages collection view
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         
         // Customize the UI
-        if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
-            layout.setMessageOutgoingAvatarSize(.zero)
-            layout.setMessageIncomingAvatarSize(.zero)
-        }
+        messagesCollectionView.backgroundColor = .systemBackground
     }
     
     private func setupMessageInputBar() {
         messageInputBar.delegate = self
-        messageInputBar.inputTextView.placeholder = "Type a message"
+        
+        // Customize input bar
+        messageInputBar.inputTextView.placeholder = "Ask anything..."
+        messageInputBar.sendButton.setTitle("", for: .normal)
+        messageInputBar.sendButton.setImage(UIImage(systemName: "arrow.up.circle.fill"), for: .normal)
+        messageInputBar.sendButton.tintColor = .systemBlue
     }
     
     private func setupBindings() {
@@ -81,18 +75,8 @@ class ChatViewController: MessagesViewController {
         viewModel.$isLoading
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isLoading in
-                self?.messageInputBar.inputTextView.placeholder = isLoading ? "ChatLlama is thinking..." : "Type a message"
                 self?.messageInputBar.sendButton.isEnabled = !isLoading
             }
             .store(in: &cancellables)
-    }
-    
-    @objc
-    private func openMenu() {
-        let menuVC = ChatListViewController()
-        menuVC.modalPresentationStyle = .overCurrentContext
-        menuVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3) // Dimmed effect
-
-        navigationController?.present(menuVC, animated: true)
     }
 }

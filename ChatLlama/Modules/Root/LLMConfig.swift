@@ -14,7 +14,7 @@ enum LLMProvider {
 }
 
 class LLMConfig {
-    static let shared = LLMConfig(.ollama)
+    static let shared = LLMConfig(.openAI)
         
     private let provider: LLMProvider
     private init(_ provider: LLMProvider) {

@@ -79,7 +79,7 @@ class ChatViewModel: ObservableObject {
     // Images
     
     func sendImageMessage() async throws {
-        let query = ImagesQuery(prompt: "", n: 1, size: ._256)
+        let query = ImagesQuery(prompt: "Generate an image of a cat on the moon", n: 1, size: ._256)
         do {
             let imageResult = try await openAI.images(query: query)
             guard let imageURL = URL(string: imageResult.data[0].url ?? "") else { return }
