@@ -66,7 +66,8 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         
         Task {
             do {
-                try await viewModel.sendUserMessage(text)
+//                try await viewModel.sendUserMessage(text)
+                try await viewModel.sendImageMessage()
             } catch {
                 // Show error alert
                 let alert = UIAlertController(
