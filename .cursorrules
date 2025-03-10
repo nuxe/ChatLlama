@@ -1,0 +1,53 @@
+# ChatLlama Swift Project Rules
+
+## Architecture
+- Use MVVM (Model-View-ViewModel) design pattern for all UI components
+- Maintain clear separation between:
+  - Models: Data structures and business logic
+  - Views: UI components that display data
+  - ViewModels: Intermediaries that prepare data for views
+- Keep ViewModels independent of the view lifecycle
+
+## Asynchronous Programming
+- Use Swift's async/await for asynchronous operations when appropriate
+- Prefer async/await over completion handlers for readability
+- Use Combine framework for reactive programming when:
+  - Dealing with streams of data
+  - Handling UI events that require transformation
+  - Managing complex state changes
+- Properly handle cancellation of async tasks and Combine subscriptions
+
+## Separation of Concerns
+- Each component should have a single responsibility
+- Avoid massive view controllers/views
+- Use dependency injection to provide services to ViewModels
+- Keep networking code separate from business logic
+- Use protocols to define interfaces between components
+
+## Components
+- Create reusable UI components for common elements
+- Implement basic components for:
+  - Message bubbles
+  - Input fields with validation
+  - Loading indicators
+  - Error states
+  - Empty states
+- Use SwiftUI previews for all UI components
+
+## Code Style
+- Use Swift's property wrappers (@Published, @ObservedObject, etc.) appropriately
+- Follow Swift naming conventions
+- Document public interfaces with comments
+- Use extensions to organize code by functionality
+- Prefer value types (structs) over reference types (classes) when appropriate
+
+## Testing
+- Write unit tests for ViewModels
+- Mock dependencies for testing
+- Test asynchronous code properly
+- Use preview providers for visual testing of UI components
+
+## Error Handling
+- Use Swift's Result type for operations that can fail
+- Implement proper error handling with meaningful error types
+- Display user-friendly error messages 
