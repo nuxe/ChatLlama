@@ -1,5 +1,5 @@
 //
-//  ChatManager.swift
+//  ChatStore.swift
 //  ChatLlama
 //
 //  Created by Kush Agrawal on 3/7/25.
@@ -8,9 +8,9 @@
 import Foundation
 import MessageKit
 
-class ChatManager: ObservableObject {
+class ChatStore: ObservableObject {
     
-    static let shared = ChatManager()
+    static let shared = ChatStore()
     
     @Published var chats: [Chat] = []
     @Published var currentChatID: UUID?
@@ -41,4 +41,4 @@ class ChatManager: ObservableObject {
             chat.id == id
         })
     }
-}
+} 
