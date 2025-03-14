@@ -16,6 +16,7 @@ class ChatInputBar: UIView {
     protocol ChatInputBarDelegate: AnyObject {
         func inputBar(_ inputBar: ChatInputBar, didSendMessage text: String)
         func inputBarDidTapVoice(_ inputBar: ChatInputBar)
+        func inputBarDidImageGen(_ isSelected: Bool)
     }
     
     /// Custom UIView that sizes itself based on its content
@@ -49,7 +50,7 @@ class ChatInputBar: UIView {
     }
     
     var isDeepSearchEnabled: Bool {
-        return deepSearchContainer.tag == 1
+        return imageGenContainer.tag == 1
     }
     
     // MARK: - UI Components
@@ -94,7 +95,7 @@ class ChatInputBar: UIView {
         return button
     }()
     
-    private lazy var deepSearchContainer: SelfSizingView = {
+    private lazy var imageGenContainer: SelfSizingView = {
         let container = SelfSizingView()
         container.backgroundColor = .systemGray6 // Light gray background
         container.layer.cornerRadius = 18
@@ -103,8 +104,8 @@ class ChatInputBar: UIView {
         container.setContentCompressionResistancePriority(.required, for: .horizontal) // Don't compress
         
         // Add tap gesture
-        let deepSearchTap = UITapGestureRecognizer(target: self, action: #selector(deepSearchTapped))
-        container.addGestureRecognizer(deepSearchTap)
+        let imageGenTap = UITapGestureRecognizer(target: self, action: #selector(imageGenTapped))
+        container.addGestureRecognizer(imageGenTap)
         container.isUserInteractionEnabled = true
         
         return container
@@ -128,7 +129,7 @@ class ChatInputBar: UIView {
         return label
     }()
     
-    private lazy var deepSearchStack: UIStackView = {
+    private lazy var imageGenStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 8
@@ -234,29 +235,29 @@ class ChatInputBar: UIView {
         ])
         
         // Set up the deep search container and stack
-        deepSearchContainer.addSubview(deepSearchStack)
+        imageGenContainer.addSubview(imageGenStack)
         
-        deepSearchStack.translatesAutoresizingMaskIntoConstraints = false
+        imageGenStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            deepSearchStack.leadingAnchor.constraint(equalTo: deepSearchContainer.leadingAnchor, constant: 12),
-            deepSearchStack.trailingAnchor.constraint(equalTo: deepSearchContainer.trailingAnchor, constant: -12),
-            deepSearchStack.topAnchor.constraint(equalTo: deepSearchContainer.topAnchor, constant: 8),
-            deepSearchStack.bottomAnchor.constraint(equalTo: deepSearchContainer.bottomAnchor, constant: -8)
+            imageGenStack.leadingAnchor.constraint(equalTo: imageGenContainer.leadingAnchor, constant: 12),
+            imageGenStack.trailingAnchor.constraint(equalTo: imageGenContainer.trailingAnchor, constant: -12),
+            imageGenStack.topAnchor.constraint(equalTo: imageGenContainer.topAnchor, constant: 8),
+            imageGenStack.bottomAnchor.constraint(equalTo: imageGenContainer.bottomAnchor, constant: -8)
         ])
         
         // Set up buttons container
-        buttonsContainer.addSubview(deepSearchContainer)
+        buttonsContainer.addSubview(imageGenContainer)
         
-        // Position the deepSearchContainer explicitly
-        deepSearchContainer.translatesAutoresizingMaskIntoConstraints = false
+        // Position the imageGenContainer explicitly
+        imageGenContainer.translatesAutoresizingMaskIntoConstraints = false
         
         // Calculate a fixed height based on content
         let buttonHeight = 36.0 // Fixed height for the DeepSearch button
         
         NSLayoutConstraint.activate([
-            deepSearchContainer.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor),
-            deepSearchContainer.topAnchor.constraint(equalTo: buttonsContainer.topAnchor),
-            deepSearchContainer.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor),
+            imageGenContainer.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor),
+            imageGenContainer.topAnchor.constraint(equalTo: buttonsContainer.topAnchor),
+            imageGenContainer.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor),
             // Height constraint for buttons container
             buttonsContainer.heightAnchor.constraint(equalToConstant: buttonHeight)
         ])
@@ -279,34 +280,35 @@ class ChatInputBar: UIView {
         delegate?.inputBarDidTapVoice(self)
     }
     
-    @objc private func deepSearchTapped() {
+    @objc private func imageGenTapped() {
         // Toggle selected state
-        let isSelected = deepSearchContainer.tag == 1
+        let isSelected = imageGenContainer.tag == 1
         toggleDeepSearchState(!isSelected)
+        delegate?.inputBarDidImageGen(!isSelected)
     }
     
     func toggleDeepSearchState(_ selected: Bool) {
         UIView.animate(withDuration: 0.2) {
             if selected {
                 // Selected state - blue background, white text/icon
-                self.deepSearchContainer.backgroundColor = UIColor.systemBlue
+                self.imageGenContainer.backgroundColor = UIColor.systemBlue
                 self.searchIcon.tintColor = .white
                 self.searchLabel.textColor = .white
             } else {
                 // Unselected state - light gray background, black text/icon
-                self.deepSearchContainer.backgroundColor = .systemGray6
+                self.imageGenContainer.backgroundColor = .systemGray6
                 self.searchIcon.tintColor = .black
                 self.searchLabel.textColor = .black
             }
             
             // Add a subtle transform/bounce effect
-            self.deepSearchContainer.transform = selected ?
+            self.imageGenContainer.transform = selected ?
                 CGAffineTransform(scaleX: 0.97, y: 0.97) :
                 .identity
         }
         
         // Update tag to track state
-        deepSearchContainer.tag = selected ? 1 : 0
+        imageGenContainer.tag = selected ? 1 : 0
     }
     
     @objc private func sendButtonTapped() {
@@ -355,7 +357,7 @@ class ChatInputBar: UIView {
         customTextView.isEditable = enabled
         sendButton.isEnabled = enabled
         voiceButton.isEnabled = enabled
-        deepSearchContainer.isUserInteractionEnabled = enabled
+        imageGenContainer.isUserInteractionEnabled = enabled
         
         alpha = enabled ? 1.0 : 0.7
     }

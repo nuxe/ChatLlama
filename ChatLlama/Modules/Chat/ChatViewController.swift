@@ -98,6 +98,7 @@ class ChatViewController: MessagesViewController {
 // MARK: - ChatInputBarDelegate
 
 extension ChatViewController: ChatInputBar.ChatInputBarDelegate {
+    
     func inputBar(_ inputBar: ChatInputBar, didSendMessage text: String) {
         // Send the message
         Task {
@@ -112,6 +113,10 @@ extension ChatViewController: ChatInputBar.ChatInputBarDelegate {
     func inputBarDidTapVoice(_ inputBar: ChatInputBar) {
         // Handle voice button tap
         print("Voice button tapped")
+    }
+    
+    func inputBarDidImageGen(_ isSelected: Bool) {
+        viewModel.chatType = isSelected ? .image : .text
     }
 }
 
