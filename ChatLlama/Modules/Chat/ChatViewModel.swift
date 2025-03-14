@@ -20,7 +20,7 @@ class ChatViewModel: ObservableObject {
     
     // MARK: - Properties
 
-    @Published var chat: Chat
+    @Published var chat: Chat?
     @Published var isLoading: Bool = false
     var chatType: ChatType = .text
     
@@ -28,23 +28,47 @@ class ChatViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let llmConfig: LLMConfig
     private let chatManager: ChatManager
-    
+    private var currentChatID: UUID?
     // MARK: - Init
     
     init(llmConfig: LLMConfig = .shared, chatManager: ChatManager) {
         self.llmConfig = llmConfig
         self.chatManager = chatManager
-        self.chat = chatManager.currentChat
         let configuration = llmConfig.providerConfig
-
         self.openAI = OpenAI(configuration: configuration)
+        setupBindings()
     }
 
+    private func setupBindings() {
+        chatManager
+            .$currentChatID
+            .sink { [weak self] currentChatID in
+                guard let self else { return }
+                self.currentChatID = currentChatID
+                self.updateCurrentChat()
+            }
+            .store(in: &cancellables)
+        
+        chatManager
+            .$chats
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.updateCurrentChat()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateCurrentChat() {
+        guard let currentChatID = currentChatID else { return }
+        self.chat = chatManager.chats.first(where: {$0.id == currentChatID })
+    }
+    
     // MARK: - Public
 
     func sendUserMessage(_ text: String) async throws {
+        guard let currentChatID else { return }
         // Add user message
-        chatManager.addMessage(kind: .text(text), sender: .user)
+        chatManager.addMessage(id: currentChatID, kind: .text(text), sender: .user)
         isLoading = true
         
         defer { isLoading = false }
@@ -64,6 +88,8 @@ class ChatViewModel: ObservableObject {
     // MARK: - Private
 
     private func sendTextMessage(_ text: String) async throws {
+        guard let chat = chat else { return }
+
         let messageParams: [ChatQuery.ChatCompletionMessageParam] = chat.messages.compactMap { message in
             guard let messageSenderType = message.sender as? Sender else {
                 return nil
@@ -86,7 +112,7 @@ class ChatViewModel: ObservableObject {
             let result = try await openAI.chats(query: query)
             
             if let responseContent = result.choices.first?.message.content?.string {
-                chatManager.addMessage(kind: .text(responseContent), sender: .bot)
+                chatManager.addMessage(id: chat.id, kind: .text(responseContent), sender: .bot)
             }
         } catch {
             throw error
@@ -94,6 +120,8 @@ class ChatViewModel: ObservableObject {
     }
     
     private func sendImageMessage(_ text: String) async throws {
+        guard let chat = chat else { return }
+
         let query = ImagesQuery(prompt: text, n: 1, size: ._256)
 
         do {
@@ -102,7 +130,7 @@ class ChatViewModel: ObservableObject {
             
             let item = ImageMediaItem.init(url: imageURL, placeholderImage: .init(), size: .init(width: 256, height: 256))
             
-            chatManager.addMessage(kind: .photo(item), sender: .bot)
+            chatManager.addMessage(id: chat.id, kind: .photo(item), sender: .bot)
         } catch {
             throw error
         }

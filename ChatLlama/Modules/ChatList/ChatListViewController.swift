@@ -10,7 +10,7 @@ import Combine
 
 // Protocol for communicating chat selection
 protocol ChatListViewControllerDelegate: AnyObject {
-    func chatListViewController(_ controller: ChatListViewController, didSelectChat chatTitle: String)
+    func chatListViewController(_ controller: ChatListViewController, didSelectChat chat: Chat)
 }
 
 class ChatListViewController: UITableViewController {
@@ -50,7 +50,7 @@ class ChatListViewController: UITableViewController {
     // MARK: - UITableView
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chatListViewModel.chatCount
+        return chatListViewModel.chats.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,20 +60,20 @@ class ChatListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let chatTitle = chatListViewModel.chats[indexPath.row].title
-        
+        let chat = chatListViewModel.chats[indexPath.row]
+                
         if let delegate = delegate {
             // Use delegate pattern if we have a delegate (inside ContainerViewController)
-            delegate.chatListViewController(self, didSelectChat: chatTitle)
+            delegate.chatListViewController(self, didSelectChat: chat)
         } else if UIDevice.current.userInterfaceIdiom == .pad {
             // For iPad/Split view, show detail view
             let chatVC = ChatViewController(viewModel: chatViewModel)
-            chatVC.title = chatTitle
+            chatVC.title = chat.title
             showDetailViewController(chatVC, sender: nil)
         } else {
             // Fallback to push navigation if not in container
             let chatVC = ChatViewController(viewModel: chatViewModel)
-            chatVC.title = chatTitle
+            chatVC.title = chat.title
             navigationController?.pushViewController(chatVC, animated: true)
         }
     }
