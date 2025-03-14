@@ -124,6 +124,7 @@ class ChatMenuViewController: UIViewController {
             target: self,
             action: #selector(toggleChatList)
         )
+        menuButton.tintColor = .black
         chatViewController.navigationItem.leftBarButtonItem = menuButton
         
         let newChatButton = UIBarButtonItem(
@@ -132,6 +133,8 @@ class ChatMenuViewController: UIViewController {
             target: self,
             action: #selector(createNewChat)
         )
+        newChatButton.tintColor = .black
+
         chatViewController.navigationItem.rightBarButtonItem = newChatButton
     }
     
