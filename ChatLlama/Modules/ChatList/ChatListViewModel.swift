@@ -12,22 +12,22 @@ import Combine
 class ChatListViewModel: ObservableObject {
 
     @Published private(set) var chats: [Chat] = []
-    private let chatManager: ChatManager
+    private let chatStore: ChatStore
     
-    init(chatManager: ChatManager) {
-        self.chatManager = chatManager
+    init(chatStore: ChatStore) {
+        self.chatStore = chatStore
         setupBindings()
     }
     
     // MARK: - Private
 
     private func setupBindings() {
-        chatManager.$chats
+        chatStore.$chats
             .assign(to: &$chats)
     }
     
     func createNewChat() {
-        chatManager.createNewChat()
+        chatStore.createNewChat()
     }
 
     func getChat(at index: Int) -> Chat {

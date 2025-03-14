@@ -27,20 +27,20 @@ class ChatViewModel: ObservableObject {
     private let openAI: OpenAI
     private var cancellables = Set<AnyCancellable>()
     private let llmConfig: LLMConfig
-    private let chatManager: ChatManager
+    private let chatStore: ChatStore
 
     // MARK: - Init
     
-    init(llmConfig: LLMConfig = .shared, chatManager: ChatManager) {
+    init(llmConfig: LLMConfig = .shared, chatStore: ChatStore) {
         self.llmConfig = llmConfig
-        self.chatManager = chatManager
+        self.chatStore = chatStore
         let configuration = llmConfig.providerConfig
         self.openAI = OpenAI(configuration: configuration)
         setupBindings()
     }
 
     private func setupBindings() {
-        Publishers.CombineLatest(chatManager.$currentChatID, chatManager.$chats)
+        Publishers.CombineLatest(chatStore.$currentChatID, chatStore.$chats)
             .map { currentChatID, chats -> Chat? in
                 guard let currentChatID = currentChatID else { return nil }
                 return chats.first(where: { $0.id == currentChatID })
@@ -53,7 +53,7 @@ class ChatViewModel: ObservableObject {
     func sendUserMessage(_ text: String) async throws {
         guard let chat = currentChat else { return }
         // Add user message
-        chatManager.addMessage(id: chat.id, kind: .text(text), sender: .user)
+        chatStore.addMessage(id: chat.id, kind: .text(text), sender: .user)
         isLoading = true
         
         defer { isLoading = false }
@@ -97,7 +97,7 @@ class ChatViewModel: ObservableObject {
             let result = try await openAI.chats(query: query)
             
             if let responseContent = result.choices.first?.message.content?.string {
-                chatManager.addMessage(id: chat.id, kind: .text(responseContent), sender: .bot)
+                chatStore.addMessage(id: chat.id, kind: .text(responseContent), sender: .bot)
             }
         } catch {
             throw error
@@ -115,7 +115,7 @@ class ChatViewModel: ObservableObject {
             
             let item = ImageMediaItem.init(url: imageURL, placeholderImage: .init(), size: .init(width: 256, height: 256))
             
-            chatManager.addMessage(id: chat.id, kind: .photo(item), sender: .bot)
+            chatStore.addMessage(id: chat.id, kind: .photo(item), sender: .bot)
         } catch {
             throw error
         }
