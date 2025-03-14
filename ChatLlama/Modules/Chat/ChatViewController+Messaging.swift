@@ -46,6 +46,15 @@ extension ChatViewController: MessagesDisplayDelegate {
         return .bubbleTail(corner, .curved)
     }
     
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        guard let sender = message.sender as? Sender else { return }
+        
+        if let avatarURL = sender.avatarURL {
+            // Use SDWebImage since it's already in your project
+            avatarView.sd_setImage(with: avatarURL, placeholderImage: nil)
+        }
+    }
+    
     func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         switch message.kind {
             
@@ -55,7 +64,6 @@ extension ChatViewController: MessagesDisplayDelegate {
         default:
             break
         }
-        
     }
 }
 
