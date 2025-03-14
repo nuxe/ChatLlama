@@ -4,7 +4,7 @@ ChatLlama is a native iOS & Mac app that provides a modern chat interface for in
 
 | Text Gen | Image Gen |
 |---------|---------|
-| ![Alt text](ChatLlama/Screenshots/strawberry.png) | ![Alt text](ChatLlama/Screenshots/llama.png) |
+| ![Alt text](ChatLlama/Screenshots/strawberry_r.png) | ![Alt text](ChatLlama/Screenshots/llama.png) |
 
 ## Requirements
 - iOS 18.2+
