@@ -18,12 +18,12 @@ extension ChatViewController: MessagesDataSource {
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        guard let chat = viewModel.chat else { return Message.empty }
+        guard let chat = viewModel.currentChat else { return Message.empty }
         return chat.messages[indexPath.section]
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-        guard let chat = viewModel.chat else { return 0 }
+        guard let chat = viewModel.currentChat else { return 0 }
         return chat.messages.count
     }
 }

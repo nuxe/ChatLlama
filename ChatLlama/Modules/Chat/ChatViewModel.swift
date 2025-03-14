@@ -20,7 +20,7 @@ class ChatViewModel: ObservableObject {
     
     // MARK: - Properties
 
-    @Published var chat: Chat?
+    @Published var currentChat: Chat?
     @Published var isLoading: Bool = false
     var chatType: ChatType = .text
     
@@ -28,7 +28,7 @@ class ChatViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let llmConfig: LLMConfig
     private let chatManager: ChatManager
-    private var currentChatID: UUID?
+
     // MARK: - Init
     
     init(llmConfig: LLMConfig = .shared, chatManager: ChatManager) {
@@ -40,35 +40,20 @@ class ChatViewModel: ObservableObject {
     }
 
     private func setupBindings() {
-        chatManager
-            .$currentChatID
-            .sink { [weak self] currentChatID in
-                guard let self else { return }
-                self.currentChatID = currentChatID
-                self.updateCurrentChat()
+        Publishers.CombineLatest(chatManager.$currentChatID, chatManager.$chats)
+            .map { currentChatID, chats -> Chat? in
+                guard let currentChatID = currentChatID else { return nil }
+                return chats.first(where: { $0.id == currentChatID })
             }
-            .store(in: &cancellables)
-        
-        chatManager
-            .$chats
-            .sink { [weak self] _ in
-                guard let self else { return }
-                self.updateCurrentChat()
-            }
-            .store(in: &cancellables)
+            .assign(to: &$currentChat)
     }
-    
-    private func updateCurrentChat() {
-        guard let currentChatID = currentChatID else { return }
-        self.chat = chatManager.chats.first(where: {$0.id == currentChatID })
-    }
-    
+
     // MARK: - Public
 
     func sendUserMessage(_ text: String) async throws {
-        guard let currentChatID else { return }
+        guard let chat = currentChat else { return }
         // Add user message
-        chatManager.addMessage(id: currentChatID, kind: .text(text), sender: .user)
+        chatManager.addMessage(id: chat.id, kind: .text(text), sender: .user)
         isLoading = true
         
         defer { isLoading = false }
@@ -88,7 +73,7 @@ class ChatViewModel: ObservableObject {
     // MARK: - Private
 
     private func sendTextMessage(_ text: String) async throws {
-        guard let chat = chat else { return }
+        guard let chat = currentChat else { return }
 
         let messageParams: [ChatQuery.ChatCompletionMessageParam] = chat.messages.compactMap { message in
             guard let messageSenderType = message.sender as? Sender else {
@@ -120,7 +105,7 @@ class ChatViewModel: ObservableObject {
     }
     
     private func sendImageMessage(_ text: String) async throws {
-        guard let chat = chat else { return }
+        guard let chat = currentChat else { return }
 
         let query = ImagesQuery(prompt: text, n: 1, size: ._256)
 

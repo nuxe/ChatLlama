@@ -64,7 +64,7 @@ class ChatViewController: MessagesViewController {
     }
     
     private func setupBindings() {
-        viewModel.$chat
+        viewModel.$currentChat
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.messagesCollectionView.reloadData()

@@ -24,7 +24,7 @@ enum Sender: Equatable, SenderType {
     }
 }
 
-class Message: MessageType {
+struct Message: MessageType {
     
     var messageId: String
     var sentDate: Date
@@ -54,7 +54,7 @@ class Message: MessageType {
     static var empty = Message.init(kind: .text(""), sender: .bot)
 }
 
-class Chat: Identifiable {
+struct Chat: Identifiable {
     
     var id: UUID
     var messages: [Message]
@@ -73,7 +73,7 @@ class Chat: Identifiable {
         }?.content ?? "New chat"
     }
     
-    func addMessage(kind: MessageKind, sender: Sender) {
+    mutating func addMessage(kind: MessageKind, sender: Sender) {
         let message = Message.init(kind: kind, sender: sender)
         messages.append(message)
     }

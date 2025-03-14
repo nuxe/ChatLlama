@@ -13,7 +13,6 @@ class ChatListViewModel: ObservableObject {
 
     @Published private(set) var chats: [Chat] = []
     private let chatManager: ChatManager
-    private var cancellables = Set<AnyCancellable>()
     
     init(chatManager: ChatManager) {
         self.chatManager = chatManager
@@ -23,13 +22,8 @@ class ChatListViewModel: ObservableObject {
     // MARK: - Private
 
     private func setupBindings() {
-        chatManager
-            .$chats
-            .sink { [weak self] allChats in
-                guard let self else { return }
-                self.chats = allChats
-        }
-            .store(in: &cancellables)
+        chatManager.$chats
+            .assign(to: &$chats)
     }
     
     func createNewChat() {
