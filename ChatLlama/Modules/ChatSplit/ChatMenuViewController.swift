@@ -40,13 +40,16 @@ class ChatMenuViewController: UIViewController {
         return view
     }()
     
+    private let chatManager: ChatManager
     private let chatViewModel: ChatViewModel
     private let chatListViewModel: ChatListViewModel
 
     // MARK: - Init
 
-    init(chatViewModel: ChatViewModel,
+    init(chatManager: ChatManager,
+         chatViewModel: ChatViewModel,
          chatListViewModel: ChatListViewModel) {
+        self.chatManager = chatManager
         self.chatViewModel = chatViewModel
         self.chatListViewModel = chatListViewModel
         super.init(nibName: nil, bundle: nil)
@@ -111,7 +114,7 @@ class ChatMenuViewController: UIViewController {
     }
     
     @objc private func createNewChat() {
-        chatListViewModel.createNewChat()
+        chatManager.createNewChat()
     }
     
     private func setupNavigationButtons() {
@@ -174,9 +177,9 @@ class ChatMenuViewController: UIViewController {
 
 // MARK: - ChatListViewControllerDelegate
 extension ChatMenuViewController: ChatListViewControllerDelegate {
-    func chatListViewController(_ controller: ChatListViewController, didSelectChat chatTitle: String) {
+    func chatListViewController(_ controller: ChatListViewController, didSelectChat chat: Chat) {
         // Update the chat view with the selected chat
-        chatViewController.title = chatTitle
+        chatManager.currentChatID = chat.id
         
         // Hide the chat list after selection
         hideChatList()

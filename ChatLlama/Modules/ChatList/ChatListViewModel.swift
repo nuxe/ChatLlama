@@ -12,20 +12,30 @@ import Combine
 class ChatListViewModel: ObservableObject {
 
     @Published private(set) var chats: [Chat] = []
-        
-    init() {}
+    private let chatManager: ChatManager
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(chatManager: ChatManager) {
+        self.chatManager = chatManager
+        setupBindings()
+    }
+    
+    // MARK: - Private
 
-    // Generic
+    private func setupBindings() {
+        chatManager
+            .$chats
+            .sink { [weak self] allChats in
+                guard let self else { return }
+                self.chats = allChats
+        }
+            .store(in: &cancellables)
+    }
     
     func createNewChat() {
-        let chat = Chat(messages: [], created: Date())
-        chats.append(chat)
+        chatManager.createNewChat()
     }
-    
-    var chatCount: Int {
-        chats.count
-    }
-    
+
     func getChat(at index: Int) -> Chat {
         chats[index]
     }

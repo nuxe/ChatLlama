@@ -19,15 +19,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let chatManager = ChatManager()
-        let chatViewModel = ChatViewModel(llmConfig: .shared, chatManager: chatManager)
-        let chatListViewModel = ChatListViewModel()
+        let chatViewModel = ChatViewModel(llmConfig: .shared, chatManager: .shared)
+        let chatListViewModel = ChatListViewModel(chatManager: .shared)
 
         if UIDevice.current.userInterfaceIdiom == .pad {
             // Use Split View for iPad & macOS
-            window.rootViewController = ChatSplitViewController(chatViewModel: chatViewModel, chatListViewModel: chatListViewModel)
+            window.rootViewController = ChatSplitViewController(chatViewModel: chatViewModel,
+                                                                chatListViewModel: chatListViewModel
+            )
         } else {
-            window.rootViewController = ChatMenuViewController(chatViewModel: chatViewModel, chatListViewModel: chatListViewModel)
+            window.rootViewController = ChatMenuViewController(chatManager: .shared,
+                                                               chatViewModel: chatViewModel,
+                                                               chatListViewModel: chatListViewModel)
         }
         
         window.makeKeyAndVisible()

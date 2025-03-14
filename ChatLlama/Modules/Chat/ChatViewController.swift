@@ -17,10 +17,6 @@ class ChatViewController: MessagesViewController {
     
     let viewModel: ChatViewModel
     private var cancellables = Set<AnyCancellable>()
-    
-    var chat: Chat {
-        viewModel.chat
-    }
 
     // MARK: - Init
 

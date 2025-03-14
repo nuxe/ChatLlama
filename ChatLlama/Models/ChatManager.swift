@@ -8,28 +8,37 @@
 import Foundation
 import MessageKit
 
-class ChatManager {
+class ChatManager: ObservableObject {
     
     static let shared = ChatManager()
     
-    var chats: [Chat]
-    var currentChat: Chat
+    @Published var chats: [Chat] = []
+    @Published var currentChatID: UUID?
     
     init() {
-        chats = [ChatManager.createNewChat()]
-        currentChat = chats.last!
+        createNewChat()
     }
     
-    func addMessage(kind: MessageKind, sender: Sender) {
-        currentChat.addMessage(kind: kind, sender: sender)
+    func addMessage(id: UUID, kind: MessageKind, sender: Sender) {
+        guard let chatIndex = getChatIndex(id) else { return }
+        var chat = chats[chatIndex]
+        chat.addMessage(kind: kind, sender: sender)
+        chats[chatIndex] = chat
     }
 
-    static func createNewChat() -> Chat {
+    func createNewChat() {
         var chat = Chat(messages: [], created: Date())
 
         let welcomeMessage = "Hello! I'm ChatLlama. How can I help you today?"
         chat.addMessage(kind: .text(welcomeMessage), sender: .bot)
 
-        return chat
+        chats.append(chat)
+        currentChatID = chat.id
+    }
+    
+    func getChatIndex(_ id: UUID) -> Int? {
+        return chats.firstIndex(where: { chat in
+            chat.id == id
+        })
     }
 }

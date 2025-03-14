@@ -18,10 +18,12 @@ extension ChatViewController: MessagesDataSource {
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
+        guard let chat = viewModel.chat else { return Message.empty }
         return chat.messages[indexPath.section]
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
+        guard let chat = viewModel.chat else { return 0 }
         return chat.messages.count
     }
 }
@@ -32,7 +34,6 @@ extension ChatViewController: MessagesLayoutDelegate {
         return CGSize(width: 0, height: 8)
     }
 }
-
 
 // MARK: - MessagesDisplayDelegate
 extension ChatViewController: MessagesDisplayDelegate {
