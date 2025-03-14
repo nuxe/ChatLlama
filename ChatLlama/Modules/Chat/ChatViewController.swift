@@ -23,9 +23,26 @@ class ChatViewController: MessagesViewController {
     private var placeholderLabel: UILabel!
     private var voiceButton: UIButton!
     private var sendButton: UIButton!
-    private var deepSearchContainer: UIView!
+    private var deepSearchContainer: SelfSizingView!
     private var searchIcon: UIImageView!
     private var searchLabel: UILabel!
+
+    // Custom UIView that sizes itself based on its content
+    private class SelfSizingView: UIView {
+        override var intrinsicContentSize: CGSize {
+            if let stack = subviews.first as? UIStackView {
+                let stackSize = stack.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+                // Add padding for leading/trailing (24 points total) and maintain height
+                return CGSize(width: stackSize.width + 24, height: stackSize.height)
+            }
+            return super.intrinsicContentSize
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            invalidateIntrinsicContentSize()
+        }
+    }
 
     // MARK: - Init
 
@@ -154,16 +171,20 @@ class ChatViewController: MessagesViewController {
         ])
         
         // Create DeepSearch Button
-        let deepSearchContainer = UIView()
+        let deepSearchContainer = SelfSizingView()
         deepSearchContainer.backgroundColor = .systemGray6 // Light gray background
         deepSearchContainer.layer.cornerRadius = 18
         deepSearchContainer.tag = 0 // 0 = unselected
+        deepSearchContainer.setContentHuggingPriority(.defaultHigh, for: .horizontal) // Prefer natural size
+        deepSearchContainer.setContentCompressionResistancePriority(.required, for: .horizontal) // Don't compress
         
         // Create a horizontal stack for the icon and text
         let deepSearchStack = UIStackView()
         deepSearchStack.axis = .horizontal
         deepSearchStack.spacing = 8
         deepSearchStack.alignment = .center
+        deepSearchStack.setContentHuggingPriority(.required, for: .horizontal)
+        deepSearchStack.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         // Add the magnifying glass icon
         let searchIcon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
@@ -198,11 +219,23 @@ class ChatViewController: MessagesViewController {
         deepSearchContainer.addGestureRecognizer(deepSearchTap)
         deepSearchContainer.isUserInteractionEnabled = true
         
-        // Create a container for the buttons
-        let buttonsContainer = UIStackView(arrangedSubviews: [deepSearchContainer])
-        buttonsContainer.axis = .horizontal
-        buttonsContainer.spacing = 8
-        buttonsContainer.distribution = .fillProportionally
+        // Create a UIView container instead of stack view for more control
+        let buttonsContainer = UIView()
+        buttonsContainer.addSubview(deepSearchContainer)
+        
+        // Position the deepSearchContainer explicitly
+        deepSearchContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Calculate a fixed height based on content
+        let buttonHeight = 36.0 // Fixed height for the DeepSearch button
+        
+        NSLayoutConstraint.activate([
+            deepSearchContainer.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor),
+            deepSearchContainer.topAnchor.constraint(equalTo: buttonsContainer.topAnchor),
+            deepSearchContainer.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor),
+            // Height constraint for buttons container
+            buttonsContainer.heightAnchor.constraint(equalToConstant: buttonHeight)
+        ])
         
         // Create the main vertical stack for the entire input bar
         let mainStack = UIStackView(arrangedSubviews: [inputContainer, buttonsContainer])
