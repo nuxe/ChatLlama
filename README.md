@@ -2,7 +2,9 @@
 
 ChatLlama is a native iOS & Mac app that provides a modern chat interface for interacting with the Ollama and OpenAI models. The app supports both OpenAI's models and locally hosted Ollama models, featuring a clean and responsive chat interface built on top of MessageKit.
 
-![Alt text](ChatLlama/Screenshots/strawberry.png)
+| Text Gen | Image Gen |
+|---------|---------|
+| ![Alt text](ChatLlama/Screenshots/strawberry.png) | ![Alt text](ChatLlama/Screenshots/llama.png) |
 
 ## Requirements
 - iOS 18.2+
