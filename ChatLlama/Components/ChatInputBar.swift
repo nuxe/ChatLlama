@@ -49,7 +49,7 @@ class ChatInputBar: UIView {
         }
     }
     
-    var isDeepSearchEnabled: Bool {
+    var isImageGenEnabled: Bool {
         return imageGenContainer.tag == 1
     }
     
@@ -110,9 +110,9 @@ class ChatInputBar: UIView {
         
         return container
     }()
-    
-    private lazy var searchIcon: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
+
+    private lazy var imageGenIcon: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "wand.and.stars"))
         imageView.tintColor = .black
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -121,9 +121,9 @@ class ChatInputBar: UIView {
         return imageView
     }()
     
-    private lazy var searchLabel: UILabel = {
+    private lazy var imageGenLabel: UILabel = {
         let label = UILabel()
-        label.text = "DeepSearch"
+        label.text = "Image"
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         return label
@@ -138,8 +138,8 @@ class ChatInputBar: UIView {
         stack.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         // Add items to stack
-        stack.addArrangedSubview(searchIcon)
-        stack.addArrangedSubview(searchLabel)
+        stack.addArrangedSubview(imageGenIcon)
+        stack.addArrangedSubview(imageGenLabel)
         
         return stack
     }()
@@ -252,7 +252,7 @@ class ChatInputBar: UIView {
         imageGenContainer.translatesAutoresizingMaskIntoConstraints = false
         
         // Calculate a fixed height based on content
-        let buttonHeight = 36.0 // Fixed height for the DeepSearch button
+        let buttonHeight = 36.0 // Fixed height for the Image Gen button
         
         NSLayoutConstraint.activate([
             imageGenContainer.leadingAnchor.constraint(equalTo: buttonsContainer.leadingAnchor),
@@ -283,22 +283,22 @@ class ChatInputBar: UIView {
     @objc private func imageGenTapped() {
         // Toggle selected state
         let isSelected = imageGenContainer.tag == 1
-        toggleDeepSearchState(!isSelected)
+        toggleImageGenState(!isSelected)
         delegate?.inputBarDidImageGen(!isSelected)
     }
     
-    func toggleDeepSearchState(_ selected: Bool) {
+    func toggleImageGenState(_ selected: Bool) {
         UIView.animate(withDuration: 0.2) {
             if selected {
                 // Selected state - blue background, white text/icon
                 self.imageGenContainer.backgroundColor = UIColor.systemBlue
-                self.searchIcon.tintColor = .white
-                self.searchLabel.textColor = .white
+                self.imageGenIcon.tintColor = .white
+                self.imageGenLabel.textColor = .white
             } else {
                 // Unselected state - light gray background, black text/icon
                 self.imageGenContainer.backgroundColor = .systemGray6
-                self.searchIcon.tintColor = .black
-                self.searchLabel.textColor = .black
+                self.imageGenIcon.tintColor = .black
+                self.imageGenLabel.textColor = .black
             }
             
             // Add a subtle transform/bounce effect
