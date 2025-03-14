@@ -90,6 +90,7 @@ class ChatViewController: MessagesViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isLoading in
                 self?.chatInputBar.setEnabled(!isLoading)
+                self?.setTypingIndicatorViewHidden(!isLoading, animated: true)
             }
             .store(in: &cancellables)
     }

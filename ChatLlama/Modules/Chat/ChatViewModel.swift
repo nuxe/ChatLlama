@@ -116,6 +116,7 @@ class ChatViewModel: ObservableObject {
             let item = ImageMediaItem.init(url: imageURL, placeholderImage: .init(), size: .init(width: 256, height: 256))
             
             chatStore.addMessage(id: chat.id, kind: .photo(item), sender: .bot)
+            
         } catch {
             throw error
         }
