@@ -24,11 +24,8 @@ class ChatViewController: MessagesViewController {
     private var voiceButton: UIButton!
     private var sendButton: UIButton!
     private var deepSearchContainer: UIView!
-    private var thinkContainer: UIView!
     private var searchIcon: UIImageView!
     private var searchLabel: UILabel!
-    private var thinkIcon: UIImageView!
-    private var thinkLabel: UILabel!
 
     // MARK: - Init
 
@@ -83,29 +80,10 @@ class ChatViewController: MessagesViewController {
         messageInputBar.setStackViewItems([], forStack: .left, animated: false)
         messageInputBar.setStackViewItems([], forStack: .right, animated: false)
         
-        // Configure the voice button (inside the input field)
-        let voiceButton = UIButton(type: .system)
-        voiceButton.setImage(UIImage(systemName: "waveform"), for: .normal)
-        voiceButton.tintColor = .black
-        voiceButton.addTarget(self, action: #selector(voiceButtonTapped), for: .touchUpInside)
-        
-        // Configure the send button (initially hidden)
-        let sendButton = UIButton(type: .system)
-        sendButton.setImage(UIImage(systemName: "arrow.up"), for: .normal)
-        sendButton.backgroundColor = .black
-        sendButton.tintColor = .white
-        sendButton.clipsToBounds = true
-        sendButton.widthAnchor.constraint(equalTo: sendButton.heightAnchor).isActive = true
-        sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
-        sendButton.isHidden = true
-        sendButton.alpha = 0 // Start with alpha 0 for better animation
-        
-        // Create a container for the input field and buttons
+        // Create a container for the input field
         let inputContainer = UIView()
-        inputContainer.backgroundColor = .white // Changed from .systemGray6 to white
+        inputContainer.backgroundColor = .white
         inputContainer.layer.cornerRadius = 24
-        
-        // Border is removed from here since we'll add it to the main container
         
         // Create a custom text view
         let customTextView = UITextView()
@@ -121,6 +99,23 @@ class ChatViewController: MessagesViewController {
         placeholderLabel.font = UIFont.systemFont(ofSize: 16)
         placeholderLabel.textColor = .systemGray
         placeholderLabel.isHidden = false
+        
+        // Configure the microphone button (shown when text field is empty)
+        let voiceButton = UIButton(type: .system)
+        voiceButton.setImage(UIImage(systemName: "waveform"), for: .normal)
+        voiceButton.tintColor = .black
+        voiceButton.addTarget(self, action: #selector(voiceButtonTapped), for: .touchUpInside)
+        
+        // Configure the send button (shown when text field has content)
+        let sendButton = UIButton(type: .system)
+        sendButton.setImage(UIImage(systemName: "arrow.up"), for: .normal)
+        sendButton.backgroundColor = .black
+        sendButton.tintColor = .white
+        sendButton.clipsToBounds = true
+        sendButton.widthAnchor.constraint(equalTo: sendButton.heightAnchor).isActive = true
+        sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
+        sendButton.isHidden = true
+        sendButton.alpha = 0 // Start with alpha 0 for better animation
         
         // Add views to the container
         inputContainer.addSubview(customTextView)
@@ -158,9 +153,9 @@ class ChatViewController: MessagesViewController {
             sendButton.heightAnchor.constraint(equalToConstant: 28)
         ])
         
-        // Create DeepSearch Button - Updated styling
+        // Create DeepSearch Button
         let deepSearchContainer = UIView()
-        deepSearchContainer.backgroundColor = .systemGray6
+        deepSearchContainer.backgroundColor = .systemGray6 // Light gray background
         deepSearchContainer.layer.cornerRadius = 18
         deepSearchContainer.tag = 0 // 0 = unselected
         
@@ -203,59 +198,14 @@ class ChatViewController: MessagesViewController {
         deepSearchContainer.addGestureRecognizer(deepSearchTap)
         deepSearchContainer.isUserInteractionEnabled = true
         
-        // Create Think Button - Updated styling
-        let thinkContainer = UIView()
-        thinkContainer.backgroundColor = .systemGray6
-        thinkContainer.layer.cornerRadius = 18
-        thinkContainer.tag = 0 // 0 = unselected
-        
-        // Create a horizontal stack for the icon and text
-        let thinkStack = UIStackView()
-        thinkStack.axis = .horizontal
-        thinkStack.spacing = 8
-        thinkStack.alignment = .center
-        
-        // Add the lightbulb icon
-        let thinkIcon = UIImageView(image: UIImage(systemName: "lightbulb"))
-        thinkIcon.tintColor = .black
-        thinkIcon.contentMode = .scaleAspectFit
-        thinkIcon.translatesAutoresizingMaskIntoConstraints = false
-        thinkIcon.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        thinkIcon.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        
-        // Add the text label
-        let thinkLabel = UILabel()
-        thinkLabel.text = "Think"
-        thinkLabel.textColor = .black
-        thinkLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        
-        // Add items to stack
-        thinkStack.addArrangedSubview(thinkIcon)
-        thinkStack.addArrangedSubview(thinkLabel)
-        
-        // Add stack to container
-        thinkContainer.addSubview(thinkStack)
-        thinkStack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            thinkStack.leadingAnchor.constraint(equalTo: thinkContainer.leadingAnchor, constant: 12),
-            thinkStack.trailingAnchor.constraint(equalTo: thinkContainer.trailingAnchor, constant: -12),
-            thinkStack.topAnchor.constraint(equalTo: thinkContainer.topAnchor, constant: 8),
-            thinkStack.bottomAnchor.constraint(equalTo: thinkContainer.bottomAnchor, constant: -8)
-        ])
-        
-        // Add tap gesture
-        let thinkTap = UITapGestureRecognizer(target: self, action: #selector(thinkTapped))
-        thinkContainer.addGestureRecognizer(thinkTap)
-        thinkContainer.isUserInteractionEnabled = true
-        
-        // Create horizontal stack for DeepSearch and Think buttons
-        let buttonsStack = UIStackView(arrangedSubviews: [deepSearchContainer, thinkContainer])
-        buttonsStack.axis = .horizontal
-        buttonsStack.spacing = 8
-        buttonsStack.distribution = .fillEqually
+        // Create a container for the buttons
+        let buttonsContainer = UIStackView(arrangedSubviews: [deepSearchContainer])
+        buttonsContainer.axis = .horizontal
+        buttonsContainer.spacing = 8
+        buttonsContainer.distribution = .fillProportionally
         
         // Create the main vertical stack for the entire input bar
-        let mainStack = UIStackView(arrangedSubviews: [inputContainer, buttonsStack])
+        let mainStack = UIStackView(arrangedSubviews: [inputContainer, buttonsContainer])
         mainStack.axis = .vertical
         mainStack.spacing = 8
         mainStack.distribution = .fill
@@ -292,11 +242,13 @@ class ChatViewController: MessagesViewController {
         self.voiceButton = voiceButton
         self.sendButton = sendButton
         self.deepSearchContainer = deepSearchContainer
-        self.thinkContainer = thinkContainer
         self.searchIcon = searchIcon
         self.searchLabel = searchLabel
-        self.thinkIcon = thinkIcon
-        self.thinkLabel = thinkLabel
+    }
+    
+    @objc private func voiceButtonTapped() {
+        // Handle voice button tap
+        print("Voice button tapped")
     }
     
     @objc private func deepSearchTapped() {
@@ -307,14 +259,17 @@ class ChatViewController: MessagesViewController {
     
     private func toggleDeepSearchState(_ selected: Bool) {
         UIView.animate(withDuration: 0.2) {
-            // Update the background - Blue when selected, light gray when not
-            self.deepSearchContainer.backgroundColor = selected ? 
-                UIColor.systemBlue : 
-                UIColor.systemGray6
-            
-            // Update the icon and text color
-            self.searchIcon.tintColor = selected ? .white : .black
-            self.searchLabel.textColor = selected ? .white : .black
+            if selected {
+                // Selected state - blue background, white text/icon
+                self.deepSearchContainer.backgroundColor = UIColor.systemBlue
+                self.searchIcon.tintColor = .white
+                self.searchLabel.textColor = .white
+            } else {
+                // Unselected state - light gray background, black text/icon
+                self.deepSearchContainer.backgroundColor = .systemGray6
+                self.searchIcon.tintColor = .black
+                self.searchLabel.textColor = .black
+            }
             
             // Add a subtle transform/bounce effect
             self.deepSearchContainer.transform = selected ? 
@@ -327,41 +282,6 @@ class ChatViewController: MessagesViewController {
         
         // Print for debugging
         print("DeepSearch is now \(selected ? "selected" : "unselected")")
-    }
-    
-    @objc private func thinkTapped() {
-        // Toggle selected state
-        let isSelected = thinkContainer.tag == 1
-        toggleThinkState(!isSelected)
-    }
-    
-    private func toggleThinkState(_ selected: Bool) {
-        UIView.animate(withDuration: 0.2) {
-            // Update the background - Blue when selected, light gray when not
-            self.thinkContainer.backgroundColor = selected ? 
-                UIColor.systemBlue : 
-                UIColor.systemGray6
-            
-            // Update the icon and text color
-            self.thinkIcon.tintColor = selected ? .white : .black
-            self.thinkLabel.textColor = selected ? .white : .black
-            
-            // Add a subtle transform/bounce effect
-            self.thinkContainer.transform = selected ? 
-                CGAffineTransform(scaleX: 0.97, y: 0.97) : 
-                .identity
-        }
-        
-        // Update tag to track state
-        thinkContainer.tag = selected ? 1 : 0
-        
-        // Print for debugging
-        print("Think is now \(selected ? "selected" : "unselected")")
-    }
-    
-    @objc private func voiceButtonTapped() {
-        // Handle voice button tap
-        print("Voice button tapped")
     }
     
     @objc private func sendButtonTapped() {
@@ -461,7 +381,7 @@ extension ChatViewController: UITextViewDelegate {
         let isEmpty = textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         placeholderLabel.isHidden = !isEmpty
         
-        // Toggle between voice and send buttons
+        // Toggle send button visibility
         toggleSendButton(show: !isEmpty)
     }
 }
