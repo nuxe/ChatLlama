@@ -2,8 +2,9 @@
 
 ChatLlama is a native iOS & Mac app that provides a modern chat interface for interacting with the Ollama and OpenAI models. The app supports both OpenAI's models and locally hosted Ollama models, featuring a clean and responsive chat interface built on top of MessageKit.
 
-## Requirements
+![Alt text](ChatLlama/Screenshots/strawberry.png)
 
+## Requirements
 - iOS 18.2+
 - Xcode 16.0+
 - For Ollama: Mac running Ollama 
@@ -53,7 +54,7 @@ ollama run llama3.2:latest
 
 ## Configuration
 
-The app uses a flexible configuration system through `AppConfig.swift`:
+The app uses a flexible configuration system through `LLMConfig.swift`:
 
 - Choose between OpenAI and Ollama providers
 - Configure model settings
@@ -63,27 +64,14 @@ Default configurations:
 - OpenAI: Uses GPT-4o Mini model
 - Ollama: Connects to `http://localhost:11434` with Llama 3.2
 
-## Network Permissions
-
-The app requires appropriate network access:
-
-- Local network access for Ollama communication
-- Internet access for OpenAI API calls
-
-These permissions are configured in the Info.plist file:
-- `NSLocalNetworkUsageDescription`: For local network access
-- `NSAppTransportSecurity`: Allows local networking
-
 ## Architecture
 
 ChatLlama follows an MVVM (Model-View-ViewModel) architectural pattern with clean separation of concerns:
-
 - **Models**: Message and Sender types for chat data
 - **Views**: UI components and ChatViewController for user interaction
 - **ViewModels**: ChatViewModel containing business logic and state management
-- **Configuration**: AppConfig for LLM provider settings
+- **Configuration**: LLMConfig for LLM provider settings
 - **Networking**: API services for provider communication
-- **Delegates**: App and Scene delegates for lifecycle management
 
 ## License
 

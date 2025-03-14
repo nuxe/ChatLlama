@@ -41,7 +41,7 @@ class ChatViewController: MessagesViewController {
     // MARK: - Private
     
     private func setupUI() {
-        title = "Chat Llama 🦙"
+        title = "Chat Llama"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         // Configure the messages collection view

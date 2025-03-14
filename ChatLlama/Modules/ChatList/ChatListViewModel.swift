@@ -29,8 +29,4 @@ class ChatListViewModel: ObservableObject {
     func createNewChat() {
         chatStore.createNewChat()
     }
-
-    func getChat(at index: Int) -> Chat {
-        chats[index]
-    }
 } 
