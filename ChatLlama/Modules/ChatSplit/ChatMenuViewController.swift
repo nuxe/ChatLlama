@@ -117,6 +117,12 @@ class ChatMenuViewController: UIViewController {
         chatStore.createNewChat()
     }
     
+    @objc private func showSettings() {
+        let settingsVC = StorageSettingsViewController(chatStore: chatStore)
+        let navController = UINavigationController(rootViewController: settingsVC)
+        present(navController, animated: true)
+    }
+    
     private func setupNavigationButtons() {
         let menuButton = UIBarButtonItem(
             image: UIImage(systemName: "line.horizontal.3"),
@@ -127,6 +133,16 @@ class ChatMenuViewController: UIViewController {
         menuButton.tintColor = .black
         chatViewController.navigationItem.leftBarButtonItem = menuButton
         
+        // Create a settings button
+        let settingsButton = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .plain,
+            target: self,
+            action: #selector(showSettings)
+        )
+        settingsButton.tintColor = .black
+        
+        // Create a new chat button
         let newChatButton = UIBarButtonItem(
             image: UIImage(systemName: "square.and.pencil"),
             style: .plain,
@@ -135,7 +151,8 @@ class ChatMenuViewController: UIViewController {
         )
         newChatButton.tintColor = .black
 
-        chatViewController.navigationItem.rightBarButtonItem = newChatButton
+        // Set right bar button items with spacer between them
+        chatViewController.navigationItem.rightBarButtonItems = [newChatButton, settingsButton]
     }
     
     @objc
