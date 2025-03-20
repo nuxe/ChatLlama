@@ -11,12 +11,14 @@ class ChatSplitViewController: UISplitViewController, UISplitViewControllerDeleg
     
     let chatViewModel: ChatViewModel
     let chatListViewModel: ChatListViewModel
+    private let chatStore: ChatStore
 
     // MARK: - Init
 
     init(chatViewModel: ChatViewModel, chatListViewModel: ChatListViewModel) {
         self.chatViewModel = chatViewModel
         self.chatListViewModel = chatListViewModel
+        self.chatStore = ChatStore.shared
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,6 +36,15 @@ class ChatSplitViewController: UISplitViewController, UISplitViewControllerDeleg
         let chatVC = ChatViewController(viewModel: chatViewModel)
         chatVC.title = "Select a Chat"
         
+        // Add settings button
+        let settingsButton = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .plain,
+            target: self,
+            action: #selector(showSettings)
+        )
+        chatVC.navigationItem.rightBarButtonItem = settingsButton
+        
         // Create navigation controllers
         let navList = UINavigationController(rootViewController: chatListVC)
         let navChat = UINavigationController(rootViewController: chatVC)
@@ -46,6 +57,14 @@ class ChatSplitViewController: UISplitViewController, UISplitViewControllerDeleg
         // Additional customizations for iPad
         presentsWithGesture = true // Allow swipe to show sidebar
 //        preferredSplitBehavior = .tile // Keep sidebar visible in landscape
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func showSettings() {
+        let settingsVC = StorageSettingsViewController(chatStore: chatStore)
+        let navController = UINavigationController(rootViewController: settingsVC)
+        present(navController, animated: true)
     }
     
     // MARK: - UISplitViewControllerDelegate
